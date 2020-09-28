@@ -1,15 +1,15 @@
 package com.codingwithmitch.foodrecipes;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.codingwithmitch.foodrecipes.models.Recipe;
 import com.codingwithmitch.foodrecipes.viewmodels.RecipeViewModel;
@@ -42,8 +42,8 @@ public class RecipeActivity extends BaseActivity {
         getIncomingIntent();
     }
 
-    private void getIncomingIntent(){
-        if(getIntent().hasExtra("recipe")){
+    private void getIncomingIntent() {
+        if (getIntent().hasExtra("recipe")) {
             Recipe recipe = getIntent().getParcelableExtra("recipe");
             Log.d(TAG, "getIncomingIntent: " + recipe.getTitle());
 
@@ -51,7 +51,7 @@ public class RecipeActivity extends BaseActivity {
     }
 
 
-    private void showParent(){
+    private void showParent() {
         mScrollView.setVisibility(View.VISIBLE);
     }
 }
