@@ -3,61 +3,16 @@ package com.codingwithmitch.foodrecipes.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.util.Arrays;
 
-public class Recipe implements Parcelable{
-
-    private String recipe_id;
-
-    private String title;
-
-    private String publisher;
-
-    private String image_url;
-
-    private float social_rank;
-
-    private String[] ingredients;
-
-
-    public Recipe(@NonNull String recipe_id, String title, String publisher, String[] ingredients,
-                  String image_url, float social_rank) {
-        this.title = title;
-        this.publisher = publisher;
-        this.ingredients = ingredients;
-        this.recipe_id = recipe_id;
-        this.image_url = image_url;
-        this.social_rank = social_rank;
-    }
-
-    public Recipe() {
-    }
-
-    protected Recipe(Parcel in) {
-        recipe_id = in.readString();
-        title = in.readString();
-        publisher = in.readString();
-        image_url = in.readString();
-        social_rank = in.readFloat();
-        ingredients = in.createStringArray();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(recipe_id);
-        dest.writeString(title);
-        dest.writeString(publisher);
-        dest.writeString(image_url);
-        dest.writeFloat(social_rank);
-        dest.writeStringArray(ingredients);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+@Entity(tableName = "recipes")
+public class Recipe implements Parcelable {
 
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
         @Override
@@ -71,6 +26,61 @@ public class Recipe implements Parcelable{
         }
     };
 
+    @PrimaryKey
+    @NonNull
+    private String recipe_id;
+    @ColumnInfo(name = "title")
+    private String title;
+    @ColumnInfo(name = "publisher")
+    private String publisher;
+    @ColumnInfo(name = "image_url")
+    private String image_url;
+    @ColumnInfo(name = "social_rank")
+    private float social_rank;
+    @ColumnInfo(name = "ingredients")
+    private String[] ingredients;
+    @ColumnInfo(name = "timestamp")
+    private int timestamp;
+
+    public Recipe(@NonNull String recipe_id, String title, String publisher, String[] ingredients,
+                  String image_url, float social_rank, int timestamp) {
+        this.title = title;
+        this.publisher = publisher;
+        this.ingredients = ingredients;
+        this.recipe_id = recipe_id;
+        this.image_url = image_url;
+        this.social_rank = social_rank;
+        this.timestamp = timestamp;
+    }
+
+    public Recipe() {
+    }
+
+    protected Recipe(Parcel in) {
+        recipe_id = in.readString();
+        title = in.readString();
+        publisher = in.readString();
+        image_url = in.readString();
+        social_rank = in.readFloat();
+        ingredients = in.createStringArray();
+        timestamp = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(recipe_id);
+        dest.writeString(title);
+        dest.writeString(publisher);
+        dest.writeString(image_url);
+        dest.writeFloat(social_rank);
+        dest.writeStringArray(ingredients);
+        dest.writeInt(timestamp);
+    }
 
     public String getTitle() {
         return title;
@@ -120,6 +130,14 @@ public class Recipe implements Parcelable{
         this.recipe_id = recipe_id;
     }
 
+    public int getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(int timestamp) {
+        this.timestamp = timestamp;
+    }
+
     @Override
     public String toString() {
         return "Recipe{" +
@@ -129,6 +147,7 @@ public class Recipe implements Parcelable{
                 ", image_url='" + image_url + '\'' +
                 ", social_rank=" + social_rank +
                 ", ingredients=" + Arrays.toString(ingredients) +
+                ", timestamp=" + timestamp +
                 '}';
     }
 }
