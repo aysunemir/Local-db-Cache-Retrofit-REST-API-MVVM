@@ -1,6 +1,7 @@
 package com.codingwithmitch.foodrecipes.repositories;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,8 @@ import com.codingwithmitch.foodrecipes.util.Resource;
 import java.util.List;
 
 public class RecipeRepository {
+
+    private static final String TAG = "RecipeRepository";
 
     private static RecipeRepository instance;
     private RecipeDao recipeDao;
@@ -41,7 +44,22 @@ public class RecipeRepository {
 
             @Override
             protected void saveCallResult(@NonNull RecipeSearchResponse item) {
+                if (item.getRecipes() != null) {
+                    Recipe[] recipes = new Recipe[item.getRecipes().size()];
 
+                    int index = 0;
+                    for (long rowId : recipeDao.insertRecipes(item.getRecipes().toArray(recipes))) {
+                        if (rowId == -1) {
+                            Log.d(TAG, "saveCallResult: CONFLICT... This recipe is already " +
+                                    "in the cache");
+                            Recipe recipe = recipes[index];
+                            recipeDao.updateRecipe(recipe.getRecipe_id(), recipe.getTitle(),
+                                    recipe.getPublisher(), recipe.getImage_url(),
+                                    recipe.getSocial_rank());
+                        }
+                        index++;
+                    }
+                }
             }
 
             @Override
