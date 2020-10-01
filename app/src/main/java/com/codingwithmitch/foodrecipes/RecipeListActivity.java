@@ -3,6 +3,7 @@ package com.codingwithmitch.foodrecipes;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
@@ -11,9 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.codingwithmitch.foodrecipes.adapters.OnRecipeListener;
 import com.codingwithmitch.foodrecipes.adapters.RecipeRecyclerAdapter;
-import com.codingwithmitch.foodrecipes.util.Testing;
 import com.codingwithmitch.foodrecipes.util.VerticalSpacingItemDecorator;
 import com.codingwithmitch.foodrecipes.viewmodels.RecipeListViewModel;
+
+import static com.codingwithmitch.foodrecipes.viewmodels.RecipeListViewModel.QUERY_EXHAUSTED;
 
 
 public class RecipeListActivity extends BaseActivity implements OnRecipeListener {
@@ -46,6 +48,34 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
                 Log.d(TAG, "onChanged: status: " + listResource.status);
 
                 if (listResource.data != null) {
+                    switch (listResource.status) {
+                        case LOADING:
+                            if (mRecipeListViewModel.getPageNumber() > 1) {
+                                mAdapter.displayLoading();
+                            } else {
+                                mAdapter.displayOnlyLoading();
+                            }
+                            break;
+                        case SUCCESS:
+                            Log.d(TAG, "onChanged: cache has ben refreshed.");
+                            Log.d(TAG, "onChanged: status: SUCCESS, #recipes: " +
+                                    listResource.data.size());
+                            mAdapter.setRecipes(listResource.data);
+                            break;
+                        case ERROR:
+                            Log.d(TAG, "onChanged: cannot refresh the cache.");
+                            Log.d(TAG, "onChanged: ERROR message: " + listResource.message);
+                            Log.d(TAG, "onChanged: status: ERROR, #recipes: " +
+                                    listResource.data.size());
+                            mAdapter.hideLoading();
+                            mAdapter.setRecipes(listResource.data);
+                            Toast.makeText(this, listResource.message, Toast.LENGTH_SHORT).show();
+
+                            if (listResource.message.equals(QUERY_EXHAUSTED)) {
+                                mAdapter.setQueryExhausted();
+                            }
+                            break;
+                    }
                     mAdapter.setRecipes(listResource.data);
                 }
             }
