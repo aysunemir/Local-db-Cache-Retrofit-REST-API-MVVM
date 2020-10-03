@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -102,7 +103,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
                 .placeholder(R.drawable.white_bg)
                 .error(R.drawable.white_bg);
         return Glide.with(this)
-                .setDefaultRequestOptions(options);
+                    .setDefaultRequestOptions(options);
     }
 
     private void displaySearchCategories() {
@@ -110,15 +111,28 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
     }
 
     private void searchRecipesApi(String query) {
+        mRecyclerView.smoothScrollToPosition(0);
         mRecipeListViewModel.searchRecipesApi(query, 1);
+        mSearchView.clearFocus();
     }
 
     private void initRecyclerView() {
         mAdapter = new RecipeRecyclerAdapter(this, initGlide());
         VerticalSpacingItemDecorator itemDecorator = new VerticalSpacingItemDecorator(30);
         mRecyclerView.addItemDecoration(itemDecorator);
-        mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!mRecyclerView.canScrollVertically(1)
+                        && mRecipeListViewModel.getViewState().getValue()
+                        == RecipeListViewModel.ViewState.RECIPES) {
+                    mRecipeListViewModel.searchNextPage();
+                }
+            }
+        });
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     private void initSearchView() {
@@ -149,20 +163,3 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
