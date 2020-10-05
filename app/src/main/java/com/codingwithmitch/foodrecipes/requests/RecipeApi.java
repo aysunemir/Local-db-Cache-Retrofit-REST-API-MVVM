@@ -21,7 +21,6 @@ public interface RecipeApi {
     // GET RECIPE REQUEST
     @GET("api/get")
     LiveData<ApiResponse<RecipeResponse>> getRecipe(
-            @Query("key") String key,
             @Query("rId") String recipe_id
     );
 }
