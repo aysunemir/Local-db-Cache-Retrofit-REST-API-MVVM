@@ -90,7 +90,7 @@ public class RecipeRepository {
             @Override
             protected void saveCallResult(@NonNull RecipeResponse item) {
                 if (item.getRecipe() != null) {
-                    item.getRecipe().setTimestamp((int) (System.currentTimeMillis() / 100));
+                    item.getRecipe().setTimestamp((int) (System.currentTimeMillis() / 1000));
                     recipeDao.insertRecipe(item.getRecipe());
                 }
             }
@@ -98,7 +98,7 @@ public class RecipeRepository {
             @Override
             protected boolean shouldFetch(@Nullable Recipe data) {
                 Log.d(TAG, "shouldFetch: recipe: " + data.toString());
-                int currentTime = (int) (System.currentTimeMillis() / 100);
+                int currentTime = (int) (System.currentTimeMillis() / 1000);
                 Log.d(TAG, "shouldFetch: current time: " + currentTime);
                 int lastRefresh = data.getTimestamp();
                 Log.d(TAG, "shouldFetch: last refresh: " + lastRefresh);
