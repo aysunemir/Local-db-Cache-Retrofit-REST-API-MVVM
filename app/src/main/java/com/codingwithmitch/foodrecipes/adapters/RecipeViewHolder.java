@@ -43,7 +43,7 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder implements View.On
 
         title.setText(recipe.getTitle());
         publisher.setText(recipe.getPublisher());
-        socialScore.setText(String.valueOf(recipe.getSocial_rank()));
+        socialScore.setText(String.valueOf(Math.round(recipe.getSocial_rank())));
         preloadSizeProvider.setView(image);
     }
 

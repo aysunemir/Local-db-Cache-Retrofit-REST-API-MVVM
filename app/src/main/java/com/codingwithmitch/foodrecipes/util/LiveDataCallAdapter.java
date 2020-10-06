@@ -33,7 +33,7 @@ public class LiveDataCallAdapter<R> extends Converter.Factory
             protected void onActive() {
                 super.onActive();
                 final ApiResponse apiResponse = new ApiResponse();
-                call.enqueue(new Callback<R>() {
+                call.clone().enqueue(new Callback<R>() {
                     @Override
                     public void onResponse(Call<R> call, Response<R> response) {
                         postValue(apiResponse.create(response));
